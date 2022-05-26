@@ -206,7 +206,7 @@ int main(int argc, char* argv[])
          {"send-output",  required_argument, &cmd,   CMD_SEND_OUTPUT},
          {"send-out",     required_argument, &cmd,   CMD_SEND_OUTPUT},
          {"send-feature", required_argument, &cmd,   CMD_SEND_FEATURE},
-         {"read-input",   optional_argument, &cmd,   CMD_READ_INPUT},
+         {"read-input",   required_argument, &cmd,   CMD_READ_INPUT},
          {"read-in",      optional_argument, &cmd,   CMD_READ_INPUT},
          {"read-feature", required_argument, &cmd,   CMD_READ_FEATURE},
          {"read-input-forever",  optional_argument, &cmd,   CMD_READ_INPUT_FOREVER},
@@ -384,7 +384,9 @@ int main(int argc, char* argv[])
                 do {
                     msg("Reading %d-byte input report %d, %d msec timeout...",
                       buflen, report_id, timeout_millis);
-                    res = hid_read_timeout(dev, buf, buflen, timeout_millis);
+		    buf[0] = report_id;
+
+                    res = hid_get_input_report(dev, buf, buflen);
                     msg("read %d bytes:\n", res);
                     if( res > 0 ) {
                         printbuf(buf,buflen, print_base, print_width);
